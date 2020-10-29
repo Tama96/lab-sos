@@ -3,6 +3,13 @@ from django.contrib.auth import get_user_model
 from mahasiswa.models import Pkl
 from catatan import models, forms
 from forum.models import Forum
+from io import BytesIO
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string, get_template
+from weasyprint import HTML
+import tempfile
+from django.views import View
 
 def index(req):
     group = req.user.groups.first()
@@ -46,3 +53,66 @@ def forum_mhs(req):
     return render(req, 'home/index.html',{
         'forum': forum,
     })
+
+def cetak(req):
+    cetak = models.Catatan.objects.all()
+    print(cetak)
+    return render(req, 'home/cetak.html',{
+        'cetak': cetak,
+    })
+
+# #def cetak(req):
+#     # ambil data
+#     catatan = models.Catatan.objects.all()
+
+#     # render pdf
+#     html_string = render_to_string('static/pdf.html', {'catatan':catatan})
+#     html = HTML(string=html_string)
+#     result = html.write_pdf()
+
+#     #buat http response
+#     response = HttpResponse(content_type='static/pdf')
+#     response['Content-Disposition'] = 'inline; filename=catatan.pdf'
+#     response['Content-Transfer-Encoding'] = 'binary'
+#     with tempfile.NamedTemporaryFile(delete=True) as output:
+#         output.write(result)
+#         output.flush()
+#         output = open(output.name,'r')
+#         response.write(output.read())
+#     return response
+
+# def render_to_pdf(template_src, context_dict={}):
+# 	template = get_template(template_src)
+# 	html  = template.render(context_dict)
+# 	result = BytesIO()
+# 	pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+# 	if not pdf.err:
+# 		return HttpResponse(result.getvalue(), content_type='application/pdf')
+# 	return None
+
+
+# data = {
+# 	"Nama": "Aldy",
+# 	"NIM": "14522174",
+#     "Lokasi LabSos" : "Praxis Academy",
+# 	}
+
+# # #Opens up page as PDF
+# class ViewPDF(View):
+# 	def get(self, request, *args, **kwargs):
+
+# 		pdf = render_to_pdf('home/pdf_template.html', data)
+# 		return HttpResponse(pdf, content_type='application/pdf')
+
+
+# #Automaticly downloads to PDF file
+# class DownloadPDF(View):
+# 	def get(self, request, *args, **kwargs):
+		
+# 		pdf = render_to_pdf('app/pdf_template.html', data)
+
+# 		response = HttpResponse(pdf, content_type='application/pdf')
+# 		filename = "Invoice_%s.pdf" %("12341231")
+# 		content = "attachment; filename='%s'" %(filename)
+# 		response['Content-Disposition'] = content
+# 		return response

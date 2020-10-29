@@ -1,0 +1,43 @@
+{% block content %}
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preview dan Cetak</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        table{
+            border-collapse: collapse;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+        td, th {
+            text-align: center;
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <table class="table">
+        <tr>
+            <th>No</th>
+            <th>Tanggal Kegiatan</th>
+            <th>Owner</th>
+            <th>Judul</th>
+        </tr>
+        {% for d in cetak %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{d.tgl_kegiatan}}</td>
+            <td>{{d.owner}}</td>
+            <td>{{d.judul}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <script> window.print() </script>
+</body>
+</head>
+</html>
+{% endblock %}
